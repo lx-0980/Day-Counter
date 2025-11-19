@@ -1,36 +1,46 @@
-        const daysEl = document.getElementById("days");
- const hoursEl = document.getElementById("hours");
- const minsEl = document.getElementById("mins");
- const secEl = document.getElementById("sec"); 
+const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minsEl = document.getElementById("mins");
+const secEl = document.getElementById("sec"); 
+const yearsEl = document.getElementById("years");
 
- const newYear = '16 oct 2023'; 
+const startDate = new Date("2023-10-16");
 
-  function countdown(){
-      const newYearDate = new Date(newYear);
-      const currentDate = new Date();
+function countdown() {
+    const now = new Date();
 
-      const totalSeconds = (currentDate- newYearDate)/1000;
+    // Calculate full years passed
+    let years = now.getFullYear() - startDate.getFullYear();
 
-      const days = Math.floor(totalSeconds/3600/24);
-      const hours = Math.floor(totalSeconds/3600) % 24;
+    // Check if full year completed based on month/date
+    let anniversary = new Date(startDate);
+    anniversary.setFullYear(startDate.getFullYear() + years);
 
-      const mins = Math.floor(totalSeconds/60) % 60;
-      const seconds = Math.floor(totalSeconds) % 60;
+    if (now < anniversary) {
+        years--;
+        anniversary = new Date(startDate);
+        anniversary.setFullYear(startDate.getFullYear() + years);
+    }
 
-    daysEl.innerHTML=days;
-     hoursEl.innerHTML=formatTime(hours);
-     minsEl.innerHTML= formatTime(mins);
-     secEl.innerHTML=formatTime(seconds);
-     
-  }
-  function formatTime(time){
-      if (time < 10) {
-          return ("0"+time)
-      } else {
-          return time
-      }
-  }
+    // Remaining difference after counting full years
+    let diffMs = now - anniversary;
 
-  countdown();
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const mins = Math.floor(totalSeconds / 60) % 60;
+    const seconds = totalSeconds % 60;
 
-  setInterval(countdown, 1000);
+    yearsEl.innerHTML = years;
+    daysEl.innerHTML = days;
+    hoursEl.innerHTML = formatTime(hours);
+    minsEl.innerHTML = formatTime(mins);
+    secEl.innerHTML = formatTime(seconds);
+}
+
+function formatTime(t) {
+    return t < 10 ? "0" + t : t;
+}
+
+countdown();
+setInterval(countdown, 1000);

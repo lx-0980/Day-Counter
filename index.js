@@ -1,45 +1,60 @@
+const yearsEl = document.getElementById("years");
+const monthsEl = document.getElementById("months");
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
 const minsEl = document.getElementById("mins");
-const secEl = document.getElementById("sec"); 
-const yearsEl = document.getElementById("years");
+const secEl = document.getElementById("sec");
 
 const startDate = new Date("2023-10-16");
 
 function countdown() {
     const now = new Date();
 
-    // Calculate full years passed
     let years = now.getFullYear() - startDate.getFullYear();
+    let months = now.getMonth() - startDate.getMonth();
+    let days = now.getDate() - startDate.getDate();
+    let hours = now.getHours() - startDate.getHours();
+    let mins = now.getMinutes() - startDate.getMinutes();
+    let secs = now.getSeconds() - startDate.getSeconds();
 
-    // Check if full year completed based on month/date
-    let anniversary = new Date(startDate);
-    anniversary.setFullYear(startDate.getFullYear() + years);
-
-    if (now < anniversary) {
-        years--;
-        anniversary = new Date(startDate);
-        anniversary.setFullYear(startDate.getFullYear() + years);
+    // --- Adjust if days are negative ---
+    if (secs < 0) {
+        secs += 60;
+        mins--;
+    }
+    if (mins < 0) {
+        mins += 60;
+        hours--;
+    }
+    if (hours < 0) {
+        hours += 24;
+        days--;
     }
 
-    // Remaining difference after counting full years
-    let diffMs = now - anniversary;
+    if (days < 0) {
+        // previous month
+        let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+    }
 
-    const totalSeconds = Math.floor(diffMs / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor(totalSeconds / 3600) % 24;
-    const mins = Math.floor(totalSeconds / 60) % 60;
-    const seconds = totalSeconds % 60;
+    // --- Adjust if months are negative ---
+    if (months < 0) {
+        months += 12;
+        years--;
+    }
 
+    // Update UI
     yearsEl.innerHTML = years;
+    monthsEl.innerHTML = months;
     daysEl.innerHTML = days;
-    hoursEl.innerHTML = formatTime(hours);
-    minsEl.innerHTML = formatTime(mins);
-    secEl.innerHTML = formatTime(seconds);
+    hoursEl.innerHTML = format(hours);
+    minsEl.innerHTML = format(mins);
+    secEl.innerHTML = format(secs);
 }
 
-function formatTime(t) {
-    return t < 10 ? "0" + t : t;
+function format(n) {
+    return n < 10 ? "0" + n : n;
 }
 
 countdown();

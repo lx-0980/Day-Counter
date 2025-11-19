@@ -5,7 +5,7 @@ const hoursEl = document.getElementById("hours");
 const minsEl = document.getElementById("mins");
 const secEl = document.getElementById("sec");
 
-const startDate = new Date("2023-10-16");
+const startDate = new Date("2025-11-20");
 
 function countdown() {
     const now = new Date();
